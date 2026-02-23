@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Shop – Register</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f0f2f5; display: flex;
+               justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: white; padding: 36px; border-radius: 8px; width: 380px;
+                box-shadow: 0 2px 12px rgba(0,0,0,.15); }
+        h2  { text-align: center; margin: 0 0 24px; color: #333; font-size: 22px; }
+        .form-group { margin-bottom: 16px; }
+        label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 4px; color: #555; }
+        input, select { width: 100%; padding: 9px 11px; border: 1px solid #ccc;
+                        border-radius: 4px; font-size: 14px; background: white; }
+        .btn { width: 100%; padding: 10px; background: #28a745; color: white; border: none;
+               border-radius: 4px; font-size: 15px; cursor: pointer; margin-top: 4px; }
+        .btn:hover { background: #218838; }
+        .alert-danger { background: #f8d7da; color: #721c24; padding: 10px 12px;
+                        border-radius: 4px; margin-bottom: 16px; font-size: 13px; }
+        .footer { text-align: center; margin-top: 18px; font-size: 13px; }
+        .footer a { color: #007bff; text-decoration: none; }
+        .role-info { font-size: 11px; color: #888; margin-top: 4px; }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h2>🛒 Create Account</h2>
+
+    <div th:if="${error}" class="alert-danger" th:text="${error}"></div>
+
+    <form method="post" th:action="@{/register}">
+        <div class="form-group">
+            <label>Username</label>
+            <input type="text" name="username" autofocus required placeholder="Choose a username"/>
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" name="password" required placeholder="Choose a password"/>
+        </div>
+        <div class="form-group">
+            <label>Register as</label>
+            <select name="role">
+                <option value="buyer">🛍️ Buyer – browse &amp; order products</option>
+                <option value="salesman">🧑‍💼 Salesman – list &amp; sell products</option>
+            </select>
+        </div>
+        <button type="submit" class="btn">Create Account</button>
+    </form>
+
+    <div class="footer">
+        Already have an account? <a th:href="@{/login}">Login</a>
+    </div>
+</div>
+</body>
+</html>

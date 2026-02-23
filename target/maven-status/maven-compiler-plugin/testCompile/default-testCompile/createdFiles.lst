@@ -1,0 +1,4 @@
+edu/example/shopapp/unit/AuthControllerUnitTest.class
+edu/example/shopapp/integration/AuthFlowIntegrationTest.class
+edu/example/shopapp/integration/AppContextIntegrationTest.class
+edu/example/shopapp/unit/CustomUserDetailsTest.class

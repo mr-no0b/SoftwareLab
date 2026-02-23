@@ -1,0 +1,12 @@
+spring:
+  main:
+    banner-mode: off
+  datasource:
+    url: jdbc:postgresql://localhost:5432/shopdb
+    driver-class-name: org.postgresql.Driver
+    username: shop_user
+    password: secret123
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+

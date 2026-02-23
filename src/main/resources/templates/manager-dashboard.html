@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Manager Dashboard</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; margin: 0; background: #f5f5f5; }
+        .topbar { background: #6f42c1; color: white; padding: 12px 24px;
+                  display: flex; justify-content: space-between; align-items: center; }
+        .topbar h2 { margin: 0; font-size: 18px; }
+        .topbar a  { color: white; text-decoration: none; background: #dc3545;
+                     padding: 6px 14px; border-radius: 4px; font-size: 13px; }
+        .tabs   { background: white; border-bottom: 2px solid #e9ecef; padding: 0 24px; display: flex; }
+        .tabs a { padding: 12px 20px; text-decoration: none; color: #555; font-size: 14px;
+                  border-bottom: 3px solid transparent; margin-bottom: -2px; }
+        .tabs a.active { color: #6f42c1; border-bottom-color: #6f42c1; font-weight: bold; }
+        .content { max-width: 1000px; margin: 24px auto; padding: 0 24px; }
+        h3  { color: #333; margin-bottom: 12px; }
+        h4  { color: #555; margin: 20px 0 8px; }
+        table { width: 100%; border-collapse: collapse; background: white;
+                border-radius: 6px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.08);
+                margin-bottom: 24px; }
+        th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid #f0f0f0; font-size: 14px; }
+        th  { background: #f8f9fa; font-weight: bold; color: #555; }
+        tr:last-child td { border-bottom: none; }
+        .card { background: white; padding: 20px 24px; border-radius: 6px;
+                box-shadow: 0 1px 4px rgba(0,0,0,.08); margin-bottom: 16px; }
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-weight: bold; margin-bottom: 4px; font-size: 13px; color: #555; }
+        .form-group input { width: 100%; padding: 8px 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
+        .btn       { padding: 6px 14px; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; color: white; }
+        .btn-purple { background: #6f42c1; } .btn-purple:hover { background: #5a30a8; }
+        .btn-blue   { background: #007bff; } .btn-blue:hover   { background: #0056b3; }
+        .btn-red    { background: #dc3545; } .btn-red:hover    { background: #c82333; }
+        .badge          { display: inline-block; padding: 3px 9px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+        .badge-buyer     { background: #cce5ff; color: #004085; }
+        .badge-salesman  { background: #fff3cd; color: #856404; }
+        .badge-pending   { background: #fff3cd; color: #856404; }
+        .badge-confirmed { background: #d4edda; color: #155724; }
+        .badge-cancelled { background: #f8d7da; color: #721c24; }
+        .stat-row { display: flex; gap: 16px; margin-bottom: 24px; }
+        .stat { background: white; flex: 1; padding: 16px 20px; border-radius: 6px;
+                box-shadow: 0 1px 4px rgba(0,0,0,.08); text-align: center; }
+        .stat .num  { font-size: 32px; font-weight: bold; color: #6f42c1; }
+        .stat .lbl  { font-size: 13px; color: #888; margin-top: 4px; }
+        .price  { font-weight: bold; }
+        .empty  { color: #aaa; font-style: italic; padding: 20px 0; }
+    </style>
+</head>
+<body>
+
+<div class="topbar">
+    <h2>👔 Manager Dashboard – <span th:text="${userDetails.user.username}">Manager</span></h2>
+    <a th:href="@{/logout}">Logout</a>
+</div>
+
+<div class="tabs">
+    <a th:href="@{/manager/dashboard(tab='users')}"    th:classappend="${tab=='users'}    ? ' active'">👥 Users</a>
+    <a th:href="@{/manager/dashboard(tab='products')}" th:classappend="${tab=='products'} ? ' active'">📦 Products</a>
+    <a th:href="@{/manager/dashboard(tab='orders')}"   th:classappend="${tab=='orders'}   ? ' active'">🛒 Orders</a>
+    <a th:href="@{/manager/dashboard(tab='profile')}"  th:classappend="${tab=='profile'}  ? ' active'">👤 Profile</a>
+</div>
+
+<div class="content">
+
+    <!-- ═══════════════════ USERS TAB ═══════════════════ -->
+    <div th:if="${tab == 'users'}">
+
+        <!-- Stats -->
+        <div class="stat-row">
+            <div class="stat">
+                <div class="num" th:text="${buyers.size()}">0</div>
+                <div class="lbl">🛍️ Buyers</div>
+            </div>
+            <div class="stat">
+                <div class="num" th:text="${salesmens.size()}">0</div>
+                <div class="lbl">🧑‍💼 Salesmen</div>
+            </div>
+            <div class="stat">
+                <div class="num" th:text="${products.size()}">0</div>
+                <div class="lbl">📦 Products</div>
+            </div>
+            <div class="stat">
+                <div class="num" th:text="${orders.size()}">0</div>
+                <div class="lbl">🛒 Orders</div>
+            </div>
+        </div>
+
+        <!-- Buyers -->
+        <h4>🛍️ Buyers</h4>
+        <table th:if="${!buyers.isEmpty()}">
+            <thead><tr><th>#</th><th>Username</th><th>Role</th><th>Action</th></tr></thead>
+            <tbody>
+                <tr th:each="u, stat : ${buyers}">
+                    <td th:text="${stat.index + 1}">1</td>
+                    <td th:text="${u.username}">-</td>
+                    <td><span class="badge badge-buyer">BUYER</span></td>
+                    <td>
+                        <form th:action="@{/manager/users/delete/{id}(id=${u.id})}" method="post">
+                            <button type="submit" class="btn btn-red"
+                                    onclick="return confirm('Delete this buyer and all their orders?')">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p th:if="${buyers.isEmpty()}" class="empty">No buyers registered yet.</p>
+
+        <!-- Salesmen -->
+        <h4>🧑‍💼 Salesmen</h4>
+        <table th:if="${!salesmens.isEmpty()}">
+            <thead><tr><th>#</th><th>Username</th><th>Role</th><th>Action</th></tr></thead>
+            <tbody>
+                <tr th:each="u, stat : ${salesmens}">
+                    <td th:text="${stat.index + 1}">1</td>
+                    <td th:text="${u.username}">-</td>
+                    <td><span class="badge badge-salesman">SALESMAN</span></td>
+                    <td>
+                        <form th:action="@{/manager/users/delete/{id}(id=${u.id})}" method="post">
+                            <button type="submit" class="btn btn-red"
+                                    onclick="return confirm('Delete this salesman, their products and all related orders?')">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p th:if="${salesmens.isEmpty()}" class="empty">No salesmen registered yet.</p>
+    </div>
+
+    <!-- ═══════════════════ PRODUCTS TAB ═══════════════════ -->
+    <div th:if="${tab == 'products'}">
+        <h3>All Products (<span th:text="${products.size()}">0</span>)</h3>
+        <table th:if="${!products.isEmpty()}">
+            <thead><tr><th>#</th><th>Name</th><th>Description</th><th>Price</th><th>Seller</th></tr></thead>
+            <tbody>
+                <tr th:each="p, stat : ${products}">
+                    <td th:text="${stat.index + 1}">1</td>
+                    <td th:text="${p.name}">-</td>
+                    <td th:text="${p.description}">-</td>
+                    <td class="price">$<span th:text="${#numbers.formatDecimal(p.price,1,'COMMA',2,'POINT')}">0.00</span></td>
+                    <td th:text="${p.salesman?.username}">-</td>
+                </tr>
+            </tbody>
+        </table>
+        <p th:if="${products.isEmpty()}" class="empty">No products in the shop yet.</p>
+    </div>
+
+    <!-- ═══════════════════ ORDERS TAB ═══════════════════ -->
+    <div th:if="${tab == 'orders'}">
+        <h3>All Orders (<span th:text="${orders.size()}">0</span>)</h3>
+        <table th:if="${!orders.isEmpty()}">
+            <thead><tr><th>#</th><th>Buyer</th><th>Product</th><th>Seller</th><th>Qty</th><th>Total</th><th>Status</th></tr></thead>
+            <tbody>
+                <tr th:each="o, stat : ${orders}">
+                    <td th:text="${stat.index + 1}">1</td>
+                    <td th:text="${o.buyer.username}">-</td>
+                    <td th:text="${o.product.name}">-</td>
+                    <td th:text="${o.product.salesman?.username}">-</td>
+                    <td th:text="${o.quantity}">1</td>
+                    <td class="price">$<span th:text="${#numbers.formatDecimal(o.product.price * o.quantity,1,'COMMA',2,'POINT')}">0.00</span></td>
+                    <td>
+                        <span th:class="'badge badge-' + ${o.status.name().toLowerCase()}"
+                              th:text="${o.status}">PENDING</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p th:if="${orders.isEmpty()}" class="empty">No orders placed yet.</p>
+    </div>
+
+    <!-- ═══════════════════ PROFILE TAB ═══════════════════ -->
+    <div th:if="${tab == 'profile'}">
+        <h3>My Profile</h3>
+        <div class="card" style="max-width:440px;">
+            <form th:action="@{/manager/profile}" method="post">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" name="username" th:value="${userDetails.user.username}" required/>
+                </div>
+                <div class="form-group">
+                    <label>New Password <small style="color:#aaa;">(leave blank to keep current)</small></label>
+                    <input type="password" name="password" placeholder="New password"/>
+                </div>
+                <button type="submit" class="btn btn-blue">Update Profile</button>
+            </form>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

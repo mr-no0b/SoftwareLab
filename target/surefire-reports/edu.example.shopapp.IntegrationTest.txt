@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: edu.example.shopapp.IntegrationTest
+-------------------------------------------------------------------------------
+Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.998 s -- in edu.example.shopapp.IntegrationTest

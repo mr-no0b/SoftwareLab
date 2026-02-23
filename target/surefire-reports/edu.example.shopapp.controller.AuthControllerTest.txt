@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: edu.example.shopapp.controller.AuthControllerTest
+-------------------------------------------------------------------------------
+Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.237 s -- in edu.example.shopapp.controller.AuthControllerTest

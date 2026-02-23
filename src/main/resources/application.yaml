@@ -1,0 +1,21 @@
+# ─── Local Dev (PostgreSQL via Docker) ───────────────────────────────────────
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/shopdb
+    driver-class-name: org.postgresql.Driver
+    username: shop_user
+    password: secret123
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+
+  thymeleaf:
+    cache: false
+
+server:
+  port: 8082
+
+jwt:
+  secret: shopapp-super-secret-key-for-jwt-token-signing-256bits!!
